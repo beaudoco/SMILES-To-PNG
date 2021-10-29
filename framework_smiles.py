@@ -105,17 +105,29 @@ for idx in range(len(mols)):
 #x_samples = load_digits().data
 #y_labels = load_digits().target
 
-train_samples = (2*image_src_train_list.shape[0])//3
-test_samples = image_src_train_list.shape[0]-train_samples
+
+print(len(image_src_train_list))
+print(len(image_src_tgt_list))
+train_samples = (2*len(image_src_train_list))//3
+test_samples = len(image_src_train_list)-train_samples
 x_train = image_src_train_list[:train_samples]
 x_test = image_src_train_list[-test_samples:]
 
-
-y_train_samples = (2*image_tgt_train_list.shape[0])//3
-y_test_samples = image_tgt_train_list.shape[0] - y_train_samples
+print(x_train[0])
+y_train_samples = (2*len(image_tgt_train_list))//3
+y_test_samples = len(image_tgt_train_list) - y_train_samples
 y_train = image_tgt_train_list[:y_train_samples]
 y_test = image_tgt_train_list[-y_test_samples:]
 
+	
+x_train = np.array(x_train)
+y_train = np.array(y_train)
+x_test = np.array(x_test)
+y_test = np.array(y_test)
+
+print(x_train.shape)
+print(x_train[0].shape)
+	
 n_features = x_train.shape[1]
 latent_dim = int(math.log(n_features, 2))
 
@@ -170,14 +182,14 @@ class Autoencoder(Model):
 		self.cls_e = tf.keras.Sequential([layers.Dense(n_features)])
 		#self.classifier = tf.keras.layers.Dense(n_class, activation='softmax')
 		self.vqc_d = tf.keras.Sequential([qlayer_d])
-        #self.cls_d = tf.keras.Sequential([layers.Dense(n_features)])
+		self.cls_d = tf.keras.Sequential([layers.Dense(n_features)])
 	
 	def call(self, x):
 
 		encoded = self.vqc_e(x)
 		result = self.vqc_d(encoded)
-     #   decoded = self.cls_d(result)
-		return result
+		decoded = self.cls_d(result)
+		return decoded
 
 
 model = Autoencoder(latent_dim)
@@ -217,8 +229,8 @@ for epoch in range(epochs):
 			model.quantum_optimizer.apply_gradients(zip(grad_vqc, model.vqc_e.trainable_variables + \
 																	model.vqc_d.trainable_variables))
             
-#			 grad_cls = t2.gradient(loss, model.cls_e.trainable_variables)
-#            model.classical_optimizer.apply_gradients(zip(grad_cls, model.cls_e.trainable_variables))
+			grad_cls = t1.gradient(loss, model.cls_d.trainable_variables)
+			model.classical_optimizer.apply_gradients(zip(grad_cls, model.cls_d.trainable_variables))
 		sum_loss += loss
 		print('Batch {}/{} Loss {:.4f}'.format(batch, batches, loss), end='\r')
 	avg_loss = sum_loss/batches
