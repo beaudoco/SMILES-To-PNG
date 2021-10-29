@@ -44,14 +44,17 @@ smiles_src_test = open('USPTO-50K/src-test.txt', 'r')
 content_src_test = smiles_src_test.read()
 chunks_src_test = content_src_test.split('\n')
 chunks_src_test.remove('')
+chunks_src_test2 = content_src_test.split('\n')
+chunks_src_test2.remove('')
 image_src_test_list = []
 idx_src_test_arr = []
 for idx in range(len(chunks_src_test)):
-    chunks_src_test[idx] = chunks_src_test[idx].replace(" ", "").split('>',1)[1]
+	chunks_src_test2[idx] = chunks_src_test2[idx].replace(" ", "")
+	chunks_src_test[idx] = chunks_src_test[idx].replace(" ", "").split('>',1)[1]
 mols = [pybel.readstring("smi", x) for x in chunks_src_test]
 smiles_src_test.close()
 for idx in range(len(mols)):
-	if(chunks_src_test[idx].split('>',1)[0].replace("<RX_","") == "1"):
+	if(chunks_src_test2[idx].split('>',1)[0].replace("<RX_","") == "1"):
 		idx_src_test_arr.append(idx)
 		image_src_test_list.append(mols[idx].draw(False))
 
@@ -75,15 +78,17 @@ smiles_src_train = open('USPTO-50K/src-train.txt', 'r')
 content_src_train = smiles_src_train.read()
 chunks_src_train = content_src_train.split('\n')
 chunks_src_train.remove('')
-
+chunks_src_train2 = content_src_train.split('\n')
+chunks_src_train2.remove('')
 image_src_train_list = []
 idx_src_train_arr = []
 for idx in range(len(chunks_src_train)):
-    chunks_src_train[idx] = chunks_src_train[idx].replace(" ", "").split('>',1)[1]
+	chunks_src_train2[idx] = chunks_src_train2[idx].replace(" ", "")
+	chunks_src_train[idx] = chunks_src_train[idx].replace(" ", "").split('>',1)[1]
 mols = [pybel.readstring("smi", x) for x in chunks_src_train]
 smiles_src_train.close()
 for idx in range(len(mols)):
-	if(chunks_src_train[idx].split('>',1)[0].replace("<RX_","") == "1"):
+	if(chunks_src_train2[idx].split('>',1)[0].replace("<RX_","") == "1"):
 		idx_src_train_arr.append(idx)
 		image_src_train_list.append(mols[idx].draw(False))
 
@@ -105,9 +110,6 @@ for idx in range(len(mols)):
 #x_samples = load_digits().data
 #y_labels = load_digits().target
 
-
-print(len(image_src_train_list))
-print(len(image_src_tgt_list))
 train_samples = (2*len(image_src_train_list))//3
 test_samples = len(image_src_train_list)-train_samples
 x_train = image_src_train_list[:train_samples]
