@@ -11,9 +11,9 @@ echo "Finish 12"
 #python3 1qnn_1dense.py -c 0.01 -q 0.001
 #echo "Finish 13"
 
-#python3 1qnn_1dense.py -c 0.001 -q 0.001
-
 #python3 1qnn_1dense.py -c 0.001 -q 0.01
+
+#python3 1qnn_1dense.py -c 0.001 -q 0.1
 #echo "Finish 14"
 
 
