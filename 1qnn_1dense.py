@@ -36,6 +36,54 @@ if lrq is None:
 #print(lrq)
 #print(type(lrq))
 
+#load up our SMILES source test set
+smiles_src_test = open('USPTO-50K/src-test.txt', 'r')
+content_src_test = smiles_src_test.read()
+chunks_src_test = content_src_test.split('\n')
+chunks_src_test.remove('')
+idx_src_test_arr = []
+for idx in range(len(chunks_src_test)):
+    chunks_src_test[idx] = chunks_src_test[idx].replace(" ", "").split('>',1)[0].replace("<RX_","")
+    if(chunks_src_test[idx] == "1"):
+        idx_src_test_arr.append(idx)
+smiles_src_test.close()
+
+#load up our SMILES target test set
+smiles_tgt_test = open('USPTO-50K/tgt-test.txt', 'r')
+content_tgt_test = smiles_tgt_test.read()
+chunks_tgt_test = content_tgt_test.split('\n')
+chunks_tgt_test.remove('')
+idx_tgt_test_arr = []
+for idx in range(len(chunks_tgt_test)):
+    chunks_tgt_test[idx] = chunks_tgt_test[idx].replace(" ", "").split('>',1)[0].replace("<RX_","")
+    if(chunks_tgt_test[idx] == "1"):
+        idx_tgt_test_arr.append(idx)
+smiles_tgt_test.close()
+
+#load up our SMILES train set
+smiles_src_train = open('USPTO-50K/src-train.txt', 'r')
+content_src_train = smiles_src_train.read()
+chunks_src_train = content_src_train.split('\n')
+chunks_src_train.remove('')
+idx_src_train_arr = []
+for idx in range(len(chunks_src_train)):
+    chunks_src_train[idx] = chunks_src_train[idx].replace(" ", "").split('>',1)[0].replace("<RX_","")
+    if(chunks_src_train[idx] == "1"):
+        idx_src_train_arr.append(idx)
+smiles_src_train.close()
+
+#load up our SMILES train set
+# smiles_tgt_train = open('USPTO-50K/tgt-train.txt', 'r')
+# content_tgt_train = smiles_tgt_train.read()
+# chunks_tgt_train = content_tgt_train.split('\n')
+# chunks_tgt_train.remove('')
+# idx_tgt_train_arr = []
+# for idx in range(len(chunks_tgt_train)):
+#     chunks_tgt_train[idx] = chunks_tgt_train[idx].replace(" ", "").split('>',1)[0].replace("<RX_","")
+#     if(chunks_tgt_train[idx] == "1"):
+#         idx_tgt_train_arr.append(idx)
+# smiles_tgt_train.close()
+
 x_samples = load_digits().data
 y_labels = load_digits().target
 
