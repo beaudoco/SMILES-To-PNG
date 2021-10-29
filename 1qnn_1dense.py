@@ -38,7 +38,7 @@ if lrq is None:
 #print(lrq)
 #print(type(lrq))
 
-#load up our SMILES source test set
+#get list all of our first type of reactions
 smiles_src_test = open('USPTO-50K/src-test.txt', 'r')
 content_src_test = smiles_src_test.read()
 chunks_src_test = content_src_test.split('\n')
@@ -50,6 +50,7 @@ for idx in range(len(chunks_src_test)):
         idx_src_test_arr.append(idx)
 smiles_src_test.close()
 
+#get the list of images from our first type of reactions
 image_src_test_list = []
 for filename in glob.glob('USPTO-50K-IMAGES-SRC-TEST/*.png'): 
     for idx in idx_src_test_arr:
@@ -57,8 +58,15 @@ for filename in glob.glob('USPTO-50K-IMAGES-SRC-TEST/*.png'):
             im=Image.open(filename)
             image_src_test_list.append(im)
 
+#get the matching reactant images
+image_tgt_test_list = []
+for filename in glob.glob('USPTO-50K-IMAGES-TGT-TEST/*.png'): 
+    for idx in idx_src_test_arr:
+        if(filename == "mol-{0}.png".format(idx)):
+            im=Image.open(filename)
+            image_tgt_test_list.append(im)
 
-#load up our SMILES train set
+#get list all of our first type of reactions
 smiles_src_train = open('USPTO-50K/src-train.txt', 'r')
 content_src_train = smiles_src_train.read()
 chunks_src_train = content_src_train.split('\n')
@@ -70,17 +78,21 @@ for idx in range(len(chunks_src_train)):
         idx_src_train_arr.append(idx)
 smiles_src_train.close()
 
-#load up our SMILES train set
-# smiles_tgt_train = open('USPTO-50K/tgt-train.txt', 'r')
-# content_tgt_train = smiles_tgt_train.read()
-# chunks_tgt_train = content_tgt_train.split('\n')
-# chunks_tgt_train.remove('')
-# idx_tgt_train_arr = []
-# for idx in range(len(chunks_tgt_train)):
-#     chunks_tgt_train[idx] = chunks_tgt_train[idx].replace(" ", "").split('>',1)[0].replace("<RX_","")
-#     if(chunks_tgt_train[idx] == "1"):
-#         idx_tgt_train_arr.append(idx)
-# smiles_tgt_train.close()
+#get the list of images from our first type of reactions
+image_src_train_list = []
+for filename in glob.glob('USPTO-50K-IMAGES-SRC-TRAIN/*.png'): 
+    for idx in idx_src_train_arr:
+        if(filename == "mol-{0}.png".format(idx)):
+            im=Image.open(filename)
+            image_src_train_list.append(im)
+
+#get the matching reactant images
+image_tgt_train_list = []
+for filename in glob.glob('USPTO-50K-IMAGES-TGT-TRAIN/*.png'): 
+    for idx in idx_src_train_arr:
+        if(filename == "mol-{0}.png".format(idx)):
+            im=Image.open(filename)
+            image_tgt_train_list.append(im)
 
 x_samples = load_digits().data
 y_labels = load_digits().target
