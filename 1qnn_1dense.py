@@ -7,6 +7,8 @@ import time
 import datetime
 import argparse
 import csv
+from PIL import Image
+import glob
 
 from tensorflow.keras import layers, losses
 from tensorflow.keras.models import Model
@@ -48,17 +50,13 @@ for idx in range(len(chunks_src_test)):
         idx_src_test_arr.append(idx)
 smiles_src_test.close()
 
-#load up our SMILES target test set
-smiles_tgt_test = open('USPTO-50K/tgt-test.txt', 'r')
-content_tgt_test = smiles_tgt_test.read()
-chunks_tgt_test = content_tgt_test.split('\n')
-chunks_tgt_test.remove('')
-idx_tgt_test_arr = []
-for idx in range(len(chunks_tgt_test)):
-    chunks_tgt_test[idx] = chunks_tgt_test[idx].replace(" ", "").split('>',1)[0].replace("<RX_","")
-    if(chunks_tgt_test[idx] == "1"):
-        idx_tgt_test_arr.append(idx)
-smiles_tgt_test.close()
+image_src_test_list = []
+for filename in glob.glob('USPTO-50K-IMAGES-SRC-TEST/*.png'): 
+    for idx in idx_src_test_arr:
+        if(filename == "mol-{0}.png".format(idx)):
+            im=Image.open(filename)
+            image_src_test_list.append(im)
+
 
 #load up our SMILES train set
 smiles_src_train = open('USPTO-50K/src-train.txt', 'r')
