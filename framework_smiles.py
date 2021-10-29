@@ -17,6 +17,7 @@ from tensorflow.keras.models import model_from_json
 import pennylane as qml
 from pennylane.templates import RandomLayers
 from sklearn.datasets import load_digits
+from openbabel import pybel
 
 
 # Argument
@@ -43,57 +44,63 @@ smiles_src_test = open('USPTO-50K/src-test.txt', 'r')
 content_src_test = smiles_src_test.read()
 chunks_src_test = content_src_test.split('\n')
 chunks_src_test.remove('')
+image_src_test_list = []
 idx_src_test_arr = []
 for idx in range(len(chunks_src_test)):
-    chunks_src_test[idx] = chunks_src_test[idx].replace(" ", "").split('>',1)[0].replace("<RX_","")
-    if(chunks_src_test[idx] == "1"):
-        idx_src_test_arr.append(idx)
+    chunks_src_test[idx] = chunks_src_test[idx].replace(" ", "").split('>',1)[1]
+mols = [pybel.readstring("smi", x) for x in chunks_src_test]
 smiles_src_test.close()
-
-#get the list of images from our first type of reactions
-image_src_test_list = []
-for filename in glob.glob('USPTO-50K-IMAGES-SRC-TEST/*.png'): 
-    for idx in idx_src_test_arr:
-        if(filename == "mol-{0}.png".format(idx)):
-            im=Image.open(filename)
-            image_src_test_list.append(im)
+for idx in range(len(mols)):
+	if(chunks_src_test[idx].split('>',1)[0].replace("<RX_","") == "1"):
+		idx_src_test_arr.append(idx)
+		image_src_test_list.append(mols[idx].draw(False))
 
 #get the matching reactant images
 image_tgt_test_list = []
-for filename in glob.glob('USPTO-50K-IMAGES-TGT-TEST/*.png'): 
-	for idx in idx_src_test_arr:
-		if(filename == "mol-{0}.png".format(idx)):
-			im=Image.open(filename)
-			image_tgt_test_list.append(im)
+smiles_tgt_test = open('USPTO-50K/tgt-test.txt', 'r')
+content_tgt_test = smiles_tgt_test.read()
+chunks_tgt_test = content_tgt_test.split('\n')
+chunks_tgt_test.remove('')
+for idx in range(len(chunks_tgt_test)):
+    chunks_tgt_test[idx] = chunks_tgt_test[idx].replace(" ", "")
+smiles_tgt_test.close()
+mols = [pybel.readstring("smi", x) for x in chunks_tgt_test]
+for idx in range(len(mols)):
+	for i in idx_src_test_arr:
+		if(idx == i):
+			image_tgt_test_list.append(mols[idx].draw(False))
 
 #get list all of our first type of reactions
 smiles_src_train = open('USPTO-50K/src-train.txt', 'r')
 content_src_train = smiles_src_train.read()
 chunks_src_train = content_src_train.split('\n')
 chunks_src_train.remove('')
+
+image_src_train_list = []
 idx_src_train_arr = []
 for idx in range(len(chunks_src_train)):
-	chunks_src_train[idx] = chunks_src_train[idx].replace(" ", "").split('>',1)[0].replace("<RX_","")
-	if(chunks_src_train[idx] == "1"):
-		idx_src_train_arr.append(idx)
-
+    chunks_src_train[idx] = chunks_src_train[idx].replace(" ", "").split('>',1)[1]
+mols = [pybel.readstring("smi", x) for x in chunks_src_train]
 smiles_src_train.close()
-
-#get the list of images from our first type of reactions
-image_src_train_list = []
-for filename in glob.glob('USPTO-50K-IMAGES-SRC-TRAIN/*.png'): 
-	for idx in idx_src_train_arr:
-		if(filename == "mol-{0}.png".format(idx)):
-			im=Image.open(filename)
-			image_src_train_list.append(im)
+for idx in range(len(mols)):
+	if(chunks_src_train[idx].split('>',1)[0].replace("<RX_","") == "1"):
+		idx_src_train_arr.append(idx)
+		image_src_train_list.append(mols[idx].draw(False))
 
 #get the matching reactant images
 image_tgt_train_list = []
-for filename in glob.glob('USPTO-50K-IMAGES-TGT-TRAIN/*.png'):
-	for idx in idx_src_train_arr:
-		if(filename == "mol-{0}.png".format(idx)):
-			im=Image.open(filename)
-			image_tgt_train_list.append(im)
+smiles_tgt_train = open('USPTO-50K/tgt-train.txt', 'r')
+content_tgt_train = smiles_tgt_train.read()
+chunks_tgt_train = content_tgt_train.split('\n')
+chunks_tgt_train.remove('')
+for idx in range(len(chunks_tgt_train)):
+    chunks_tgt_train[idx] = chunks_tgt_train[idx].replace(" ", "")
+smiles_tgt_train.close()
+mols = [pybel.readstring("smi", x) for x in chunks_tgt_train]
+for idx in range(len(mols)):
+	for i in idx_src_train_arr:
+		if(idx == i):
+			image_tgt_train_list.append(mols[idx].draw(False))
 
 #x_samples = load_digits().data
 #y_labels = load_digits().target
