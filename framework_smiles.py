@@ -90,7 +90,7 @@ smiles_src_train.close()
 for idx in range(len(mols)):
 	if(chunks_src_train2[idx].split('>',1)[0].replace("<RX_","") == "1"):
 		idx_src_train_arr.append(idx)
-		image_src_train_list.append(mols[idx].draw(False))
+#		image_src_train_list.append(mols[idx].draw(show = False, filename = png))
 
 #get the matching reactant images
 image_tgt_train_list = []
@@ -105,17 +105,28 @@ mols = [pybel.readstring("smi", x) for x in chunks_tgt_train]
 for idx in range(len(mols)):
 	for i in idx_src_train_arr:
 		if(idx == i):
-			image_tgt_train_list.append(mols[idx].draw(False))
+			image_tgt_train_list.append(mols[idx].draw(show = False, filename = png))
 
+"""
 #x_samples = load_digits().data
 #y_labels = load_digits().target
+print("####################Debugging###################")
+print("x_train_shape: ",image_src_train_list[0])
+print("####################Debugging###################")
+print(len(image_src_train_list))
+print("####################Debugging###################")
+
 
 train_samples = (2*len(image_src_train_list))//3
 test_samples = len(image_src_train_list)-train_samples
 x_train = image_src_train_list[:train_samples]
 x_test = image_src_train_list[-test_samples:]
+print("####################Debugging###################")
+print("x_train_shape: ",x_train[0])
+print("####################Debugging###################")
+print(len(x_train))
+print("####################Debugging###################")
 
-print(x_train[0])
 y_train_samples = (2*len(image_tgt_train_list))//3
 y_test_samples = len(image_tgt_train_list) - y_train_samples
 y_train = image_tgt_train_list[:y_train_samples]
@@ -127,9 +138,13 @@ y_train = np.array(y_train)
 x_test = np.array(x_test)
 y_test = np.array(y_test)
 
+
+print("####################Debugging###################")
+
 print(x_train.shape)
 print(x_train[0].shape)
-	
+print("####################Debugging###################")
+
 n_features = x_train.shape[1]
 latent_dim = int(math.log(n_features, 2))
 
@@ -262,3 +277,4 @@ with open("lrq_"+lrq_str+".csv", "w") as csvfile:
 	writer.writeheader()
 	for i in range(epochs):
 		writer.writerow({"Epoch": i+1, "Train Loss": train_loss_array[i], "Test Loss":test_loss_array[i]})
+"""
