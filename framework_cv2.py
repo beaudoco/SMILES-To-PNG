@@ -40,6 +40,7 @@ if lrq is None:
 #print(type(lrq))
 
 #get list all of our first type of reactions
+	
 """
 smiles_src_test = open('USPTO-50K/src-test.txt', 'r')
 content_src_test = smiles_src_test.read()
@@ -73,6 +74,8 @@ for idx in range(len(mols)):
 	for i in idx_src_test_arr:
 		if(idx == i):
 			image_tgt_test_list.append(mols[idx].draw(False))
+"""
+
 """
 #get list all of our first type of reactions
 smiles_src_train = open('USPTO-50K/src-train.txt', 'r')
@@ -113,6 +116,45 @@ for idx in range(len(mols)):
 			img = cv2.imread('USPTO-50K-IMAGES-TGT/mol-{0}.png', idx)
 			grey_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 			flatten = grey_img.flatten()
+			image_tgt_train_list.append(flatten)
+
+"""
+
+
+
+smiles_src_train = open('USPTO-50K/src-train.txt', 'r')
+content_src_train = smiles_src_train.read()
+chunks_src_train = content_src_train.split('\n')
+chunks_src_train.remove('')
+idx_src_train_arr = []
+for idx in range(len(chunks_src_train)):
+	chunks_src_train[idx] = chunks_src_train[idx].replace(" ", "").split('>',1)[0].replace("<RX_","")
+	if(chunks_src_train[idx] == "1"):
+		idx_src_train_arr.append(idx)
+smiles_src_train.close()
+
+#get the list of images from our first type of reactions
+image_src_train_list = []
+for filename in glob.glob('USPTO-50K-IMAGES-SRC/*'):
+	for idx in idx_src_train_arr:
+		if(filename == "USPTO-50K-IMAGES-SRC/mol-{0}.png".format(idx)):
+			print(filename)
+			img = cv2.imread(filename)
+			grey_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+			resized = cv2.resize(grey_img, (64, 64) , interpolation= cv2.INTER_AREA)
+			flatten = resized.flatten()
+			image_src_train_list.append(flatten)
+
+
+#get the matching reactant images
+image_tgt_train_list = []
+for filename in glob.glob('USPTO-50K-IMAGES-TGT/*'):
+	for idx in idx_src_train_arr:
+		if(filename == "USPTO-50K-IMAGES-TGT/mol-{0}.png".format(idx)):
+			img = cv2.imread(filename)
+			grey_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+			resized = cv2.resize(grey_img, (64, 64) , interpolation= cv2.INTER_AREA)
+			flatten = resized.flatten()
 			image_tgt_train_list.append(flatten)
 
 
@@ -160,12 +202,15 @@ y_train = image_tgt_train_list[:y_train_samples]
 y_test = image_tgt_train_list[-y_test_samples:]
 
 	
-#x_train = np.array(x_train)
-#y_train = np.array(y_train)
-#x_test = np.array(x_test)
-#y_test = np.array(y_test)
+x_train = np.array(x_train)
+y_train = np.array(y_train)
+x_test = np.array(x_test)
+y_test = np.array(y_test)
 
-
+x_train = x_train.astype(np.float64)
+y_train = y_train.astype(np.float64)
+x_test = x_test.astype(np.float64)
+y_test = y_test.astype(np.float64)
 print("####################Debugging###################")
 
 print('x_train_shape:',x_train.shape)
@@ -177,7 +222,8 @@ print('features: ', x_train.shape[1])
 latent_dim = int(math.log(n_features, 2))
 
 n_qubits = latent_dim
-
+print(x_train[1])
+print(type(x_train[1][0]))
 ###########################
 #Initialization for cross-entropy
 #n_class = 10
@@ -202,7 +248,7 @@ def qnode_e(inputs, weights):
 	return [qml.expval(qml.PauliZ(i)) for i in range(n_qubits)]
 
 # Construct decoder Variational Quantum Circuit.
-#@qml.qnode(dev, interface='tf', diff_method='backprop')
+@qml.qnode(dev, interface='tf', diff_method='backprop')
 def qnode_d(inputs, weights):
 	qml.templates.AngleEmbedding(inputs, wires=range(n_qubits))
 	qml.templates.StronglyEntanglingLayers(weights, wires=range(n_qubits))
@@ -232,8 +278,9 @@ class Autoencoder(Model):
 	def call(self, x):
 
 		encoded = self.vqc_e(x)
-		result = self.vqc_d(encoded)
-		decoded = self.cls_d(result)
+		#result = self.vqc_d(encoded)
+		decoded = self.cls_d(encoded)
+	
 		return decoded
 
 
@@ -269,13 +316,15 @@ for epoch in range(epochs):
 		with tf.GradientTape() as t1:
 			y_pred = model(x)
 			loss = tf.reduce_mean(tf.square(y_pred - y))
-			grad_vqc = t1.gradient(loss, model.vqc_e.trainable_variables + \
-										model.vqc_d.trainable_variables)
-			model.quantum_optimizer.apply_gradients(zip(grad_vqc, model.vqc_e.trainable_variables + \
-																	model.vqc_d.trainable_variables))
-            
-			grad_cls = t1.gradient(loss, model.cls_d.trainable_variables)
-			model.classical_optimizer.apply_gradients(zip(grad_cls, model.cls_d.trainable_variables))
+	#		grad_vqc = t1.gradient(loss, model.vqc_e.trainable_variables + \
+#										model.vqc_d.trainable_variables)
+#			model.quantum_optimizer.apply_gradients(zip(grad_vqc, model.vqc_e.trainable_variables + \
+#																	model.vqc_d.trainable_variables))
+			grad_vqc = t1.gradient(loss, model.vqc_e.trainable_variables + model.cls_d.trainable_variables)
+			model.quantum_optimizer.apply_gradients(zip(grad_vqc, model.vqc_e.trainable_variables + model.cls_d.trainable_variables))
+         
+#grad_cls = t1.gradient(loss, model.cls_d.trainable_variables)
+#			model.classical_optimizer.apply_gradients(zip(grad_cls, model.cls_d.trainable_variables))
 		sum_loss += loss
 		print('Batch {}/{} Loss {:.4f}'.format(batch, batches, loss), end='\r')
 	avg_loss = sum_loss/batches
@@ -305,3 +354,4 @@ with open("lrq_"+lrq_str+".csv", "w") as csvfile:
 	writer.writeheader()
 	for i in range(epochs):
 		writer.writerow({"Epoch": i+1, "Train Loss": train_loss_array[i], "Test Loss":test_loss_array[i]})
+
