@@ -15,16 +15,16 @@ mols = [pybel.readstring("smi", x) for x in chunks]
 for idx in range(len(mols)):
     mols[idx].draw(False, "USPTO-50K-IMAGES-TGT-TRAIN/mol-{0}.png".format(idx))
 
-smiles = open('USPTO-50K/src-train.txt', 'r')
+smiles = open('USPTO-50K/src-test.txt', 'r')
 content = smiles.read()
 chunks = content.split('\n')
 chunks.remove('')
 for idx in range(len(chunks)):
-    chunks[idx] = chunks[idx].replace(" ", "")
+    chunks[idx] = chunks[idx].replace(" ", "").split('>',1)[1]
 smiles.close()
 mols = [pybel.readstring("smi", x) for x in chunks]
 for idx in range(len(mols)):
-    mols[idx].draw(False, "USPTO-50K-IMAGES-SRC-TRAIN/mol-{0}.png".format(idx))
+    mols[idx].draw(False, "USPTO-50K-IMAGES-SRC/mol-{0}.png".format(idx))
 
 smiles_src_train = open('USPTO-50K/src-train.txt', 'r')
 content_src_train = smiles_src_train.read()
