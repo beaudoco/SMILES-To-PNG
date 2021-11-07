@@ -1,8 +1,10 @@
 from openbabel import pybel
 from numpy import asarray
+import numpy as np
 import os
 import cv2
 import glob
+from tempfile import TemporaryFile
 
 smiles = open('USPTO-50K/tgt-train.txt', 'r')
 content = smiles.read()
@@ -47,9 +49,10 @@ for filename in glob.glob('USPTO-50K-IMAGES-SRC-TRAIN/*'):
             resized = cv2.resize(grey_img, (28, 28) , interpolation= cv2.INTER_AREA)
             flatten = resized.flatten()
             image_src_train_list.append(flatten)
-            f = open("USPTO-50K-IMAGES-SRC-TRAIN/mol-{0}.npy".format(idx), "w")
-            f.write(asarray(flatten))
-            f.close()
+            np.save("USPTO-50K-IMAGES-SRC-TRAIN/mol-{0}.npy", asarray(flatten))
+            # f = open("USPTO-50K-IMAGES-SRC-TRAIN/mol-{0}.npy".format(idx), "w")
+            # f.write(asarray(flatten))
+            # f.close()
             os.remove("USPTO-50K-IMAGES-SRC-TRAIN/mol-{0}.png".format(idx))
 
 
@@ -63,9 +66,10 @@ for filename in glob.glob('USPTO-50K-IMAGES-TGT-TRAIN/*'):
             resized = cv2.resize(grey_img, (28, 28) , interpolation= cv2.INTER_AREA)
             flatten = resized.flatten()
             image_tgt_train_list.append(flatten)
-            f = open("USPTO-50K-IMAGES-TGT-TRAIN/mol-{0}.npy".format(idx), "w")
-            f.write(asarray(flatten))
-            f.close()
+            np.save("USPTO-50K-IMAGES-TGT-TRAIN/mol-{0}.npy", asarray(flatten))
+            # f = open("USPTO-50K-IMAGES-TGT-TRAIN/mol-{0}.npy".format(idx), "w")
+            # f.write(asarray(flatten))
+            # f.close()
             os.remove("USPTO-50K-IMAGES-TGT-TRAIN/mol-{0}.png".format(idx))
 
 
