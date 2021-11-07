@@ -97,7 +97,7 @@ for idx in range(len(chunks_src_train)):
 			# print(chunks_src_train[idx])
         # print(read_smiles(chunks_src_train[idx]))
 
-# print(graph_src_train_list[0])
+print(graph_src_train_list[0])
 
 #get the matching reactant images
 graph_tgt_train_list = []
