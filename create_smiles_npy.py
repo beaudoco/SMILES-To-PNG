@@ -35,7 +35,7 @@ for idx in range(len(mols)):
 
 #get the list of images from our first type of reactions
 for filename in glob.glob('USPTO-50K-IMAGES-SRC-TRAIN/*'):
-    print(filename)
+    # print(filename)
     for idx in idx_src_train_arr:
         print("USPTO-50K-IMAGES-SRC-TRAIN/mol-{0}.png".format(idx))
         if(filename == "USPTO-50K-IMAGES-SRC-TRAIN/mol-{0}.png".format(idx)):
