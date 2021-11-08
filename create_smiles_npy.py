@@ -22,12 +22,15 @@ smiles = open('USPTO-50K/src-train.txt', 'r')
 content = smiles.read()
 chunks = content.split('\n')
 chunks.remove('')
+chunks2 = content.split('\n')
+chunks2.remove('')
 content_src_train = smiles.read()
 for idx in range(len(chunks)):
     chunks[idx] = chunks[idx].replace(" ", "").split('>',1)[1]
+    chunks2[idx] = chunks2[idx].replace(" ", "")
     chunks[idx] = chunks[idx].replace(" ", "").split('>',1)[0].replace("<RX_","")
     print(chunks[idx])
-    if(chunks[idx] == "1"):
+    if(chunks2[idx].split('>',1)[0].replace("<RX_","") == "1"):
         idx_src_train_arr.append(idx)
 smiles.close()
 mols = [pybel.readstring("smi", x) for x in chunks]
