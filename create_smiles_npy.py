@@ -6,17 +6,6 @@ import cv2
 import glob
 from tempfile import TemporaryFile
 
-smiles = open('USPTO-50K/tgt-train.txt', 'r')
-content = smiles.read()
-chunks = content.split('\n')
-chunks.remove('')
-for idx in range(len(chunks)):
-    chunks[idx] = chunks[idx].replace(" ", "")
-smiles.close()
-mols = [pybel.readstring("smi", x) for x in chunks]
-for idx in range(len(mols)):
-    mols[idx].draw(False, "USPTO-50K-IMAGES-TGT-TRAIN/mol-{0}.png".format(idx))
-
 idx_src_train_arr = []
 image_src_train_list = []
 smiles = open('USPTO-50K/src-train.txt', 'r')
@@ -35,8 +24,20 @@ for idx in range(len(chunks)):
         idx_src_train_arr.append(idx)
 smiles.close()
 mols = [pybel.readstring("smi", x) for x in chunks]
-for idx in range(len(mols)):
+for idx in idx_src_train_arr:
     mols[idx].draw(False, "USPTO-50K-IMAGES-SRC-TRAIN/mol-{0}.png".format(idx))
+    # image_src_train_list.append(mols[idx].draw(show = False, filename = png))
+
+smiles = open('USPTO-50K/tgt-train.txt', 'r')
+content = smiles.read()
+chunks = content.split('\n')
+chunks.remove('')
+for idx in range(len(chunks)):
+    chunks[idx] = chunks[idx].replace(" ", "")
+smiles.close()
+mols = [pybel.readstring("smi", x) for x in chunks]
+for idx in idx_src_train_arr:
+    mols[idx].draw(False, "USPTO-50K-IMAGES-TGT-TRAIN/mol-{0}.png".format(idx))
 
 #get the list of images from our first type of reactions
 for filename in glob.glob('USPTO-50K-IMAGES-SRC-TRAIN/*'):
