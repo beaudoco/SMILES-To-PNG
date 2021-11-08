@@ -26,6 +26,7 @@ content_src_train = smiles.read()
 for idx in range(len(chunks)):
     chunks[idx] = chunks[idx].replace(" ", "").split('>',1)[1]
     chunks[idx] = chunks[idx].replace(" ", "").split('>',1)[0].replace("<RX_","")
+    print(chunks[idx])
     if(chunks[idx] == "1"):
         idx_src_train_arr.append(idx)
 smiles.close()
