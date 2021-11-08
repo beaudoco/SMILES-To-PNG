@@ -29,8 +29,8 @@ for idx in range(len(chunks)):
     chunks[idx] = chunks[idx].replace(" ", "").split('>',1)[1]
     chunks2[idx] = chunks2[idx].replace(" ", "")
     chunks[idx] = chunks[idx].replace(" ", "").split('>',1)[0].replace("<RX_","")
-    print(chunks[idx])
     if(chunks2[idx].split('>',1)[0].replace("<RX_","") == "1"):
+        print(idx)
         idx_src_train_arr.append(idx)
 smiles.close()
 mols = [pybel.readstring("smi", x) for x in chunks]
@@ -41,7 +41,7 @@ for idx in range(len(mols)):
 for filename in glob.glob('USPTO-50K-IMAGES-SRC-TRAIN/*'):
     # print(filename)
     for idx in idx_src_train_arr:
-        print("USPTO-50K-IMAGES-SRC-TRAIN/mol-{0}.png".format(idx))
+        # print("USPTO-50K-IMAGES-SRC-TRAIN/mol-{0}.png".format(idx))
         if(filename == "USPTO-50K-IMAGES-SRC-TRAIN/mol-{0}.png".format(idx)):
             img = cv2.imread(filename)
             grey_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
