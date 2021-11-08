@@ -42,7 +42,9 @@ smiles_src_train.close()
 #get the list of images from our first type of reactions
 image_src_train_list = []
 for filename in glob.glob('USPTO-50K-IMAGES-SRC-TRAIN/*'):
+    print(filename)
     for idx in idx_src_train_arr:
+        print("USPTO-50K-IMAGES-SRC-TRAIN/mol-{0}.png".format(idx))
         if(filename == "USPTO-50K-IMAGES-SRC-TRAIN/mol-{0}.png".format(idx)):
             img = cv2.imread(filename)
             grey_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
