@@ -47,7 +47,7 @@ for filename in glob.glob('USPTO-50K-IMAGES-SRC-TEST/*'):
         if(filename == "USPTO-50K-IMAGES-SRC-TEST/mol-{0}.png".format(idx)):
             img = cv2.imread(filename)
             grey_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-            resized = cv2.resize(grey_img, (28, 28) , interpolation= cv2.INTER_AREA)
+            resized = cv2.resize(grey_img, (128, 128) , interpolation= cv2.INTER_AREA)
             flatten = resized.flatten()
             image_src_test_list.append(flatten)
             np.save("USPTO-50K-IMAGES-SRC-TEST/mol-{0}.npy".format(idx), asarray(flatten))
@@ -65,7 +65,7 @@ for filename in glob.glob('USPTO-50K-IMAGES-TGT-TEST/*'):
         if(filename == "USPTO-50K-IMAGES-TGT-TEST/mol-{0}.png".format(idx)):
             img = cv2.imread(filename)
             grey_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-            resized = cv2.resize(grey_img, (28, 28) , interpolation= cv2.INTER_AREA)
+            resized = cv2.resize(grey_img, (128, 128) , interpolation= cv2.INTER_AREA)
             flatten = resized.flatten()
             image_tgt_test_list.append(flatten)
             np.save("USPTO-50K-IMAGES-TGT-TEST/mol-{0}.npy".format(idx), asarray(flatten))
