@@ -25,7 +25,7 @@ for idx in range(len(chunks)):
 smiles.close()
 mols = [pybel.readstring("smi", x) for x in chunks]
 for idx in idx_src_test_arr:
-    mols[idx].draw(False, "USPTO-50K-IMAGES-SRC-TEST/mol-{0}.png".format(idx))
+    mols[idx].draw(False, "USPTO-50K-IMAGES-SRC-TRAIN/mol-{0}.png".format(idx))
     # image_src_test_list.append(mols[idx].draw(show = False, filename = png))
 
 smiles = open('USPTO-50K/tgt-test.txt', 'r')
@@ -37,43 +37,43 @@ for idx in range(len(chunks)):
 smiles.close()
 mols = [pybel.readstring("smi", x) for x in chunks]
 for idx in idx_src_test_arr:
-    mols[idx].draw(False, "USPTO-50K-IMAGES-TGT-TEST/mol-{0}.png".format(idx))
+    mols[idx].draw(False, "USPTO-50K-IMAGES-TGT-TRAIN/mol-{0}.png".format(idx))
 
 #get the list of images from our first type of reactions
-for filename in glob.glob('USPTO-50K-IMAGES-SRC-TEST/*'):
+for filename in glob.glob('USPTO-50K-IMAGES-SRC-TRAIN/*'):
     # print(filename)
     for idx in idx_src_test_arr:
-        # print("USPTO-50K-IMAGES-SRC-TEST/mol-{0}.png".format(idx))
-        if(filename == "USPTO-50K-IMAGES-SRC-TEST/mol-{0}.png".format(idx)):
+        # print("USPTO-50K-IMAGES-SRC-TRAIN/mol-{0}.png".format(idx))
+        if(filename == "USPTO-50K-IMAGES-SRC-TRAIN/mol-{0}.png".format(idx)):
             img = cv2.imread(filename)
             grey_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
             resized = cv2.resize(grey_img, (128, 128) , interpolation= cv2.INTER_AREA)
             flatten = resized.flatten()
             image_src_test_list.append(flatten)
-            np.save("USPTO-50K-IMAGES-SRC-TEST/mol-{0}.npy".format(idx), asarray(flatten))
+            np.save("USPTO-50K-IMAGES-SRC-TRAIN/mol-{0}.npy".format(idx), asarray(flatten))
             # print("shrunk {0}".format(idx))
-            # f = open("USPTO-50K-IMAGES-SRC-TEST/mol-{0}.npy".format(idx), "w")
+            # f = open("USPTO-50K-IMAGES-SRC-TRAIN/mol-{0}.npy".format(idx), "w")
             # f.write(asarray(flatten))
             # f.close()
-            os.remove("USPTO-50K-IMAGES-SRC-TEST/mol-{0}.png".format(idx))
+            os.remove("USPTO-50K-IMAGES-SRC-TRAIN/mol-{0}.png".format(idx))
 
 
 #get the matching reactant images
 image_tgt_test_list = []
-for filename in glob.glob('USPTO-50K-IMAGES-TGT-TEST/*'):
+for filename in glob.glob('USPTO-50K-IMAGES-TGT-TRAIN/*'):
     for idx in idx_src_test_arr:
-        if(filename == "USPTO-50K-IMAGES-TGT-TEST/mol-{0}.png".format(idx)):
+        if(filename == "USPTO-50K-IMAGES-TGT-TRAIN/mol-{0}.png".format(idx)):
             img = cv2.imread(filename)
             grey_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
             resized = cv2.resize(grey_img, (128, 128) , interpolation= cv2.INTER_AREA)
             flatten = resized.flatten()
             image_tgt_test_list.append(flatten)
-            np.save("USPTO-50K-IMAGES-TGT-TEST/mol-{0}.npy".format(idx), asarray(flatten))
+            np.save("USPTO-50K-IMAGES-TGT-TRAIN/mol-{0}.npy".format(idx), asarray(flatten))
             # print("shrunk {0}".format(idx))
-            # f = open("USPTO-50K-IMAGES-TGT-TEST/mol-{0}.npy".format(idx), "w")
+            # f = open("USPTO-50K-IMAGES-TGT-TRAIN/mol-{0}.npy".format(idx), "w")
             # f.write(asarray(flatten))
             # f.close()
-            os.remove("USPTO-50K-IMAGES-TGT-TEST/mol-{0}.png".format(idx))
+            os.remove("USPTO-50K-IMAGES-TGT-TRAIN/mol-{0}.png".format(idx))
 
 
 # fps = [x.calcfp() for x in mols]
